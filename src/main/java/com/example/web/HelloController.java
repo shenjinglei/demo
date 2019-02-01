@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -9,16 +9,18 @@ import org.springframework.web.bind.annotation.RestController;
 @Controller
 public class HelloController {
 
-    @ResponseBody
-    @RequestMapping("/hello")
-    public String index() {
-        return "Hello World";
-    }
-
     @RequestMapping("/")
-    public String index(ModelMap map) {
-        map.addAttribute("host", "http://blog.didispace.com");
+    public String index() {
         return "index";
     }
 
+    @RequestMapping("/hello")
+    public String hello() {
+        return "hello";
+    }
+
+    @RequestMapping("/login")
+    public String login() {
+        return "login";
+    }
 }
