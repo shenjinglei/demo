@@ -1,9 +1,13 @@
 package com.example;
 
+import com.example.domain.User;
+import com.example.domain.UserRepository;
 import com.example.web.HelloController;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
@@ -17,23 +21,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = MockServletContext.class)
-@WebAppConfiguration
+@SpringBootTest()
 public class ApplicationTests {
-    //测试git
-    private MockMvc mvc;
+    @Autowired
+    private UserRepository userRepository;
 
     @Before
-    public void setUp() throws Exception {
-        mvc = MockMvcBuilders.standaloneSetup(new HelloController()).build();
+    public void setUp(){
+        userRepository.deleteAll();
     }
 
     @Test
-    public void getHello() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/hello").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string(equalTo("Hello World")));
-    }
+    public void test() throws Exception{
+        userRepository.save(new User(1L,"didi", 30));
+        userRepository.save(new User(2L,"nana", 40));
+        userRepository.save(new User(3L, "kaka", 50));
+        Assert.assertEquals(3,userRepository.findAll().size());
 
+        User u = userRepository.findById(1L).get();
+        userRepository.delete(u);
+        Assert.assertEquals(2,userRepository.findAll().size());
+
+        u = userRepository.findByUsername("nana");
+        userRepository.delete(u);
+        Assert.assertEquals(1,userRepository.findAll().size());
+    }
 }
 
